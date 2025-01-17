@@ -8,13 +8,15 @@ rm(list=ls())
 library(dplyr)
 library(tidyverse)
 library(readxl)
+library(ggplot2)
+
 
 # Get package versions
 get_package_version <- function(package_name) {
   package_version <- as.character(packageVersion(package_name))
   return(package_version)
 }
-packages <- c("dplyr", "tidyverse", "readxl")
+packages <- c("dplyr", "tidyverse", "readxl", "ggplot2")
 package_versions <- sapply(packages, get_package_version)
 print(package_versions)
 
@@ -63,4 +65,48 @@ for (i in seq_along(expr_list)) {
   results_df <- as.data.frame(lipea_matches)
   print(results_df)
   write.csv(results_df, file = paste0(out_filepath, i, "_", expr_list[[i]], " FDR0.1 lipids in LIPEA classification.csv"), row.names = FALSE)
+}
+
+# read in LIPEA analysis results
+# analyses were performed against pre-defined background of mouse (mus musculus)
+lipea_filepath <- "./lipea_analysis/"
+lipea_file_list = list.files(path=lipea_filepath, pattern=".xls", all.files=FALSE, full.names=FALSE)
+lipea_file_list
+
+lipea_results <- list()
+for (i in seq_along(expr_list)) {
+   data <- read_xls(paste0(lipea_filepath, lipea_file_list[[i]])) %>%
+    rename(pathway = "Pathway name", 
+           lipids = "Pathway lipids", 
+           p = "p-value",
+           converted_number = "Converted lipids (number)", 
+           converted_percent = "Converted lipids (percentage)", 
+           Benjamini_corr = "Benjamini correction", 
+           Bonferroni_corr = "Bonferroni correction")
+   lipea_results[[expr_list[[i]]]] <- data
+}
+sapply(lipea_results, dim) # preview
+head(lipea_results[[1]])
+colnames(lipea_results[[1]])
+
+# visualize lipea pathways
+# Create the bubble plot using ggplot2
+out_filepath = "./plots/lipea/"
+dir.create(path = out_filepath, F)
+
+for (i in seq_along(expr_list)){
+  data <- lipea_results[[i]] %>% filter(p < 0.05)
+  title <- expr_list[[i]]
+  
+  data$pathway <- reorder(data$pathway, data$converted_percent) # arrange by decreasing converted lipid %
+  data %>%
+    ggplot(aes(x = converted_percent, y = pathway, size = -log10(p))) +
+    geom_point(alpha = 0.6, fill = "light blue") +
+    scale_size_continuous(range = c(3, 15)) +
+    theme_classic(base_size = 20) +
+    labs(title = "Top Lipidomic Pathways (P<0.05)", 
+         x = "% Converted Lipids",
+         size = "-Log10(P-value)") +
+    theme(aspect.ratio = 2, legend.key.size = unit(0.01, "cm"))  
+  ggsave(filename = paste0(out_filepath, i, " ", title, " top lipid pathways.pdf"), width = 10, height = 10)
 }
