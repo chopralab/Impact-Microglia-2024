@@ -62,5 +62,5 @@ for (i in seq_along(expr_list)) {
   expr <- expr_list[[i]]
   results_df <- as.data.frame(lipea_matches)
   print(results_df)
-  write.csv(results_df, file = paste0(out_filepath, i, "_", expr_list[[i]], " FDR0.1 lipids in LIPEA classification.csv'), row.names = FALSE)
+  write.csv(results_df, file = paste0(out_filepath, i, "_", expr_list[[i]], " FDR0.1 lipids in LIPEA classification.csv"), row.names = FALSE)
 }

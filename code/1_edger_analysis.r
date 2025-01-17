@@ -113,7 +113,7 @@ contrast_expr1 = makeContrasts( # create contrast
 ## for experiment design 2, comparing Impact 4H vs Pre-Impact MIX
 ## since N number is the same, this expr design can be applied to expr 4-6
 groups_expr2 = c(gr3, gr4, blank_name) %>% # create factor from groups
-              factor(levels = c(blank_name, gr3_name, gr4_name)) 
+              factor(levels = c(gr3_name, gr4_name, blank_name)) 
 design_expr2 = model.matrix(~groups_expr2) # create design matrix with experimental groups as column names
 colnames(design_expr2) = c("Intercept", gr3_name, gr4_name) 
 contrast_expr2 = makeContrasts( # create contrast
