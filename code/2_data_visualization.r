@@ -134,9 +134,8 @@ colnames(data_list[[4]])
 colnames(data_list[[7]])
 
 counts_expr1 = 8:15 # where ion intensity values are in the dataframe, excluding blank
-counts_expr2 = 9:18
-counts_expr3 = 9:16
-counts_list <- list(counts_expr1, counts_expr1, counts_expr1, counts_expr2, counts_expr2, counts_expr2, counts_expr3)
+counts_expr2 = 8:17
+counts_list <- list(counts_expr1, counts_expr1, counts_expr1, counts_expr2, counts_expr2, counts_expr2, counts_expr1)
 length(counts_list) == length(expr_list)
 
 for (i in 1:length(expr_list)) {

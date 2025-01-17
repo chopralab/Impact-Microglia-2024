@@ -107,6 +107,6 @@ for (i in seq_along(expr_list)){
     labs(title = "Top Lipidomic Pathways (P<0.05)", 
          x = "% Converted Lipids",
          size = "-Log10(P-value)") +
-    theme(aspect.ratio = 2, legend.key.size = unit(0.01, "cm"))  
+    theme(aspect.ratio = 1, legend.position = "bottom")  
   ggsave(filename = paste0(out_filepath, i, " ", title, " top lipid pathways.pdf"), width = 10, height = 10)
 }
