@@ -80,43 +80,24 @@ expr_list
 data_list <- list(data_pmg, data_pmg, data_pmg, data_mix, data_mix, data_mix, data_mix, data_mix)
 
 # set EdgeR groups
-## PMG experimental groups
-blank_name = "Blank" # column name for blank
+## Experimental design for N=5
+blank_name = "blank" # column name for blank
 
-gr1_name = "I1" # group1: Impact Day 1 PMG
+gr1_name = "G1" 
 gr1_length = 4
 gr1 = rep(gr1_name, gr1_length)
-gr2_name = "S1" # group2: Sham Day 1 PMG
+gr2_name = "G2"
 gr2_length = 4 
 gr2 = rep(gr2_name, gr2_length)
-gr3_name = "I7" # group3: Impact Day 7 PMG
-gr3_length = 4
+
+## Experimental design for N=4
+
+gr3_name = "G3" 
+gr3_length = 5
 gr3 = rep(gr3_name, gr3_length)
-gr4_name = "S7" # group4: Sham Day 7 PMG
-gr4_length = 4
+gr4_name = "G4" 
+gr4_length = 5
 gr4 = rep(gr4_name, gr4_length)
-
-## MIX experimental groups
-blank_name = "SolventBlank"
-
-gr5_name = "Pre_I" # group5: Pre-Impact MIX
-gr5_length = 5
-gr5 = rep(gr5_name, gr5_length)
-gr6_name = "I_4H" # group6: Impact 4H MIX
-gr6_length = 5
-gr6 = rep(gr6_name, gr6_length)
-gr7_name = "I_D3" # group7: Impact D3 MIX
-gr7_length = 5
-gr7 = rep(gr7_name, gr7_length)
-gr8_name = "I_D7" # group8: Impact D7 MIX
-gr8_length = 5
-gr8 = rep(gr8_name, gr8_length)
-gr9_name = "I_D7_pHAB" # group9: Impact D7+pHAB MIX
-gr9_length = 4
-gr9 = rep(gr9_name, gr9_length)
-gr10_name = "I_D7_" # group10: Impact D7-pHAB MIX corresponding to the +pHAB group
-gr10_length = 4
-gr10 = rep(gr10_name, gr10_length)
 
 ## for experiment design 1, comparing Impact D1 vs Sham D1 PMG
 ## since N number is the same, this expr design can be applied to expr 2, 3, and 7
@@ -125,18 +106,18 @@ groups_expr1 = c(gr1, gr2, blank_name) %>% # create factor from groups
 design_expr1 = model.matrix(~groups_expr1) # create design matrix with experimental groups as column names
 colnames(design_expr1) = c("Intercept", gr1_name, gr2_name) 
 contrast_expr1 = makeContrasts( # create contrast
-    H = I1 - S1, 
+    H = G1 - G2, 
     levels = groups_expr1
 )
 
 ## for experiment design 2, comparing Impact 4H vs Pre-Impact MIX
 ## since N number is the same, this expr design can be applied to expr 4-6
-groups_expr2 = c(gr6, gr5, blank_name) %>% # create factor from groups
-              factor(levels = c(blank_name, gr6_name, gr5_name)) 
+groups_expr2 = c(gr3, gr4, blank_name) %>% # create factor from groups
+              factor(levels = c(blank_name, gr3_name, gr4_name)) 
 design_expr2 = model.matrix(~groups_expr2) # create design matrix with experimental groups as column names
-colnames(design_expr2) = c("Intercept", gr6_name, gr5_name) 
+colnames(design_expr2) = c("Intercept", gr3_name, gr4_name) 
 contrast_expr2 = makeContrasts( # create contrast
-    H = I_4H - Pre_I, 
+    H = G3 - G4, 
     levels = groups_expr2
 ) 
 
@@ -153,10 +134,10 @@ counts_expr2 = c(7:10, 15:18, 19) # where ion intensities are in the raw data fr
 counts_expr3 = c(7:10, 3:6, 19) # where ion intensities are in the raw data frame for exper 3
 
 colnames(data_mix)
-counts_expr4 = c(27, grep("2", colnames(data_mix)), grep("1", colnames(data_mix))) # Impact 4H vs Pre-Impact MIX
-counts_expr5 = c(27, grep("3", colnames(data_mix)), grep("1", colnames(data_mix))) # Impact D3 vs Pre-Impact MIX
-counts_expr6 = c(27, grep("4", colnames(data_mix)), grep("1", colnames(data_mix))) # Impact D7 vs Pre-Impact MIX
-counts_expr7 = c(27, grep("5", colnames(data_mix)), grep("4", colnames(data_mix))[c(1, 3:5)]) # Impact D7+pHAb vs Impact D7
+counts_expr4 = c(grep("2", colnames(data_mix)), grep("1", colnames(data_mix)), 27) # Impact 4H vs Pre-Impact MIX
+counts_expr5 = c(grep("3", colnames(data_mix)), grep("1", colnames(data_mix)), 27) # Impact D3 vs Pre-Impact MIX
+counts_expr6 = c(grep("4", colnames(data_mix)), grep("1", colnames(data_mix)), 27) # Impact D7 vs Pre-Impact MIX
+counts_expr7 = c(grep("5", colnames(data_mix)), grep("4", colnames(data_mix))[c(1, 3:5)], 27) # Impact D7+pHAb vs Impact D7
 
 # using a loop since there are many comparisons
 counts_expr_list <- list(counts_expr1, counts_expr2, counts_expr3, counts_expr4, counts_expr5, counts_expr6, counts_expr7) 

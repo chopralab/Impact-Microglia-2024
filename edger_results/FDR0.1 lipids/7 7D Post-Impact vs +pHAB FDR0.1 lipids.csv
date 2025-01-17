@@ -1,7 +1,9 @@
 "Lipid Class","Number of Species"
+"AC",1
 "CE",8
-"CER",1
-"PE",3
-"PG",1
-"PI",1
-"PS",1
+"CER",8
+"PE",9
+"PG",3
+"PI",2
+"PS",2
+"TAG",1
